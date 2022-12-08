@@ -1,4 +1,5 @@
 const amqplib = require('amqplib');
+const TSVController = require('./controller');
 
 async function sendQueue ({smg}) {
   try {
@@ -6,17 +7,28 @@ async function sendQueue ({smg}) {
 
     const channel = await conn.createChannel();
 
-    const queue = 'q2';
+    const queueKhachHang = 'KhachHang';
 
-    await channel.assertQueue(queue, {
+    await channel.assertQueue(queueKhachHang, {
       durable: true,
     });
 
-    channel.sendToQueue(queue, Buffer.from(JSON.stringify(smg), {
+    channel.sendToQueue(queueKhachHang, Buffer.from(JSON.stringify(smg), {
       persistent: true
     }))
   } catch (err) {
     console.error(err);
   } 
 };
-sendQueue({smg: 'hello world'})
+const sleep = (milliseconds) => {
+  return new Promise(resolve => setTimeout(resolve, milliseconds))
+}
+async function producer () {
+  const dataTsv = TSVController.getTSV()
+  let a = 0
+  for ( const data of dataTsv ) {
+    sendQueue({smg: data});
+    await sleep(5000);
+  }
+}
+producer();
