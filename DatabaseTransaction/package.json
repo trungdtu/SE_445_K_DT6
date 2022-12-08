@@ -9,6 +9,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "amqplib": "^0.10.3"
+    "amqplib": "^0.10.3",
+    "dotenv": "^16.0.3",
+    "fs": "^0.0.1-security",
+    "mariadb": "^3.0.2"
   }
 }
