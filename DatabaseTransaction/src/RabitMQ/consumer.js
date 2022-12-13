@@ -1,5 +1,5 @@
 const amqplib = require('amqplib');
-const maria = require('./db')
+const maria = require('../MariaDatabase/db')
 async function receiveQueue () {
   try {
     const db = await maria.getConnection()
@@ -19,10 +19,8 @@ async function receiveQueue () {
     });
     //reciver 
     await channel.consume(queue, async smg => {
-      // await db.query("INSERT INTO `dbtransaction`.`khachhang` (`Ho`, `Ten`, `NgaySinh`, `SoDienThoai`, `CMND`, `DiaChi`) VALUES ('Phan', 'Trung', '2022-12-08', '0123456789', '012345567', 'DaNang')")
-
       console.log('KhachHang: ', smg.content.toString())
-      console.log('\n\n')
+      console.log('\n')
     }, {
       noAck: true,
     })

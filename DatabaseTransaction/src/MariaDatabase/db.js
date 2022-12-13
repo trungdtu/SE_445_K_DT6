@@ -12,7 +12,7 @@ module.exports={
       return new Promise(function(resolve,reject){
           pool.getConnection().then(function(connection){
               resolve(connection);
-          }).catch(function(error){
+          }).catch(function(error) {
               reject(error);
           });
       });
