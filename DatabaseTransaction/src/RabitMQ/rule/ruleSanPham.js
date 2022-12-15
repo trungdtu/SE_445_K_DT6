@@ -20,7 +20,7 @@ async function abbreviationName(name){
     return name;
 }
 
- function nameProductRule(value){
+function nameProductRule(value){
     return new Promise(async(resolve, reject)=>{
         if(typeof value === 'string') {
             resolve(await abbreviationName(value));
@@ -30,8 +30,6 @@ async function abbreviationName(name){
         }
     })
 }
-
-
 
 function priceProductRule(value){
     return new Promise((resolve,reject)=>{

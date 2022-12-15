@@ -1,88 +1,72 @@
-function mkhRule(value){
-    return new Promise((resolve, reject)=>{
-        if(typeof value === 'string') {
-            return resolve(true);
-        }
-        else return reject({
-            table: 'KhachHang',
-            col: 'MaKhachHang',
-            message: 'Wrong format must be string'
-        })
-    })
-}
-
-function nameHo(value){
-    return new Promise((resolve, reject)=>{
-        if(typeof value === 'string') {
-            return resolve(true);
-        }
-        else return reject({
-            table: 'KhachHang',
-            col: 'Ho',
-            message:  'Wrong format must be string'
-        })
-    })
-}
-
-function nameTen(value){
-    return new Promise((resolve, reject)=>{
-        if(typeof value === 'string') {
-            return resolve(true);
-        }
-        else return reject({
-            table: 'KhachHang',
-            col: 'Ten',
-            message:  'Wrong format must be string'
-        })
-    })
-}
-
-function ngaysinhRule(value){
-    return new Promise((resolve,reject)=>{
-        if(typeof value === 'string') {
-            return resolve(true);
-        }
-        else return reject({
-            table: 'KhachHang',
-            col: 'NgaySinh',
-            message:  'Wrong format must be string'
-        })
-    })
-}
-
-function sdtRule(value){
-    return new Promise((resolve,reject)=>{
-        if(Number.isInteger(value)) {
-            return resolve(value);
-        }
-        else reject('Wrong format for SDT must be an Integer');
-    })
-}
-
-function cmndRule(value){
-    return new Promise((resolve,reject)=>{
-        if(Number.isInteger(value)) {
-            return resolve(value);
-        }
-        else reject('Wrong format for CMND must be an Integer');
-    })
-}
-
-function diachiRule(value){
-    return new Promise((resolve,reject)=>{
-        if(typeof value === 'string') {
-            return resolve(true);
-        }
-        else return reject({
-            table: 'KhachHang',
-            col: 'DiaChi',
-            message:  'Wrong format must be string'
-        })
-    })
-}
-
-
 class RuleKhachHang{
+    Ho(value){
+        return new Promise((resolve, reject)=>{
+            if(typeof value === 'string') {
+                return resolve(true);
+            }
+            else return reject({
+                table: 'KhachHang',
+                col: 'Ho',
+                message:  'Wrong format must be string'
+            })
+        })
+    }
+    Ten(value){
+        return new Promise((resolve, reject)=>{
+            if(typeof value === 'string') {
+                return resolve(true);
+            }
+            else return reject({
+                table: 'KhachHang',
+                col: 'Ten',
+                message:  'Wrong format must be string'
+            })
+        })
+    }
+    
+    NgaySinh(value){
+        return new Promise((resolve,reject)=>{
+            if(typeof value === 'string') {
+                return resolve(true);
+            }
+            else return reject({
+                table: 'KhachHang',
+                col: 'NgaySinh',
+                message:  'Wrong format must be string'
+            })
+        })
+    }
+    
+    SoDienThoai(value){
+        return new Promise((resolve,reject)=>{
+            if(Number.isInteger(value)) {
+                return resolve(value);
+            }
+            else reject('Wrong format for SDT must be an Integer');
+        })
+    }
+    
+    CMND(value){
+        return new Promise((resolve,reject)=>{
+            if(Number.isInteger(value)) {
+                return resolve(value);
+            }
+            else reject('Wrong format for CMND must be an Integer');
+        })
+    }
+    
+    DiaChi(value){
+        return new Promise((resolve,reject)=>{
+            if(typeof value === 'string') {
+                return resolve(true);
+            }
+            else return reject({
+                table: 'KhachHang',
+                col: 'DiaChi',
+                message:  'Wrong format must be string'
+            })
+        })
+    }
     async checkRule(data){
         try{
             return {
