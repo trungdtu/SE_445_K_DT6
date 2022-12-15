@@ -1,8 +1,12 @@
-function numberRule(value) {
+function isFloat(n) {
+  return Number(n) === n && n % 1 !== 0;
+}
+
+function rateRule(value) {
   return new Promise((resolve, reject) => {
-    if (Number.isInteger(value)) {
+    if (Number.isFloat(value)) {
       return resolve(value);
-    } else reject('Wrong format ID ');
+    } else reject('Wrong format, rate must be a float ');
   });
 }
 function dateRule(value) {
@@ -11,21 +15,15 @@ function dateRule(value) {
     const day = Number(value.split('/')[0]);
     const month = Number(value.split('/')[1]);
     const year = Number(value.split('/')[2]);
-    if (day < 0 || month < 0 || month > 12 || day < 0 || day > 31) {
-      reject({
-        table: 'PhieuCam',
-        col: 'NgayTao',
-        message: 'Ngày tạo không hợp lệ',
-      });
+    if (day < 0 || day > 31) {
+      reject('lỗi nhập ngày ,Ngày trả không hợp lệ');
+    } else if (month < 0 || month > 12) {
+      reject('lỗi nhập tháng ,Tháng trả không hợp lệ');
+    } else if (year < 0) {
+      reject('lỗi nhập năm ,Năm trả không hợp lệ');
     } else {
       switch (month) {
-        case 1:
-        case 3:
-        case 5:
-        case 7:
-        case 8:
-        case 10:
-        case 12:
+        case (1, 3, 5, 7, 8, 10, 12):
           daymax = 31;
           break;
         case 2:
@@ -33,21 +31,14 @@ function dateRule(value) {
             daymax = 29;
           else daymax = 28;
           break;
-        case 4:
-        case 6:
-        case 9:
-        case 11:
+        case (4, 6, 9, 11):
           daymax = 30;
           break;
       }
       if (day <= daymax) {
         return resolve(value);
       } else {
-        reject({
-          table: 'PhieuCam',
-          col: 'NgayTao',
-          message: 'Ngày tạo không hợp lệ',
-        });
+        reject('lỗi ,Ngày tạo không hợp lệ');
       }
     }
   });
@@ -55,60 +46,58 @@ function dateRule(value) {
 function dateRule2(valueTao, valueTra) {
   return new Promise((resolve, reject) => {
     let daymax;
-    const day = Number(valueTra.split('/')[0]);
-    const month = Number(valueTra.split('/')[1]);
-    const year = Number(valueTra.split('/')[2]);
-    if (day < 0 || month < 0 || month > 12 || day < 0 || day > 31) {
-      reject({
-        table: 'PhieuCam',
-        col: 'NgayTra',
-        message: 'Ngày tra không hợp lệ',
-      });
+    const dayTra = Number(valueTra.split('/')[0]);
+    const monthTra = Number(valueTra.split('/')[1]);
+    const yearTra = Number(valueTra.split('/')[2]);
+    const dayTao = Number(valueTao.split('/')[0]);
+    const monthTao = Number(valueTao.split('/')[1]);
+    const yearTao = Number(valueTao.split('/')[2]);
+    if (dayTra < 0 || dayTra > 31) {
+      reject('lỗi nhập ngày ,Ngày trả không hợp lệ');
+    } else if (monthTra < 0 || monthTra > 12) {
+      reject('lỗi nhập tháng ,Tháng trả không hợp lệ');
+    } else if (yearTra < 0) {
+      reject('lỗi nhập năm ,Năm trả không hợp lệ');
     } else {
-      switch (month) {
-        case 1:
-        case 3:
-        case 5:
-        case 7:
-        case 8:
-        case 10:
-        case 12:
+      switch (monthTra) {
+        case (1, 3, 5, 7, 8, 10, 12):
           daymax = 31;
           break;
         case 2:
-          if ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0)
+          if ((yearTra % 4 == 0 && yearTra % 100 != 0) || yearTra % 400 == 0)
             daymax = 29;
           else daymax = 28;
           break;
-        case 4:
-        case 6:
-        case 9:
-        case 11:
+        case (4, 6, 9, 11):
           daymax = 30;
           break;
       }
-      if (day > daymax) {
-        reject({
-          table: 'PhieuCam',
-          col: 'NgayTra',
-          message: 'Ngày trả không hợp lệ',
-        });
+      if (dayTra > daymax) {
+        reject('lỗi nhập ngày ,Ngày trả không hợp lệ');
+      }
+
+      if (yearTao > yearTra) {
+        reject('lỗi nhập năm ,năm trả không thể nhỏ hơn năm tạo');
+      } else if (yearTao == yearTra && monthTao > monthTra) {
+        reject('lỗi nhập tháng ,tháng trả không thể nhỏ hơn tháng tạo');
+      } else if (monthTao == monthTra && dayTao > dayTra) {
+        reject('lỗi nhập ngày ,ngày trả không thể nhỏ hơn ngày tạo');
       } else {
-        let date1 = new Date(valueTao);
-        let date2 = new Date(valueTra);
-        if (date1 > date2) {
-          reject({
-            table: 'PhieuCam',
-            col: 'NgayTra',
-            message: 'Ngày trả nhỏ hơn ngày tạo',
-          });
-        } else {
-          return resolve(NgayTra);
-        }
+        return resolve(valueTra);
       }
     }
   });
 }
+// const data = {
+//   NgayTao: '15/12/2022',
+//   NgayTra: '17/12/2022',
+//   LaiSuat: 0.2,
+// };
+
+// dateRule2(data.NgayTao, data.NgayTra).then((value) => {
+//   console.log(value);
+// });
+
 class RulePhieuCam {
   async checkRule(data) {
     try {
