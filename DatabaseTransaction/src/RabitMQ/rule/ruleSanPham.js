@@ -31,10 +31,6 @@ function isExistSpecialCharInString(value){
     }
     return false;
 }
-// console.log(checkStringInString('lap'));
-//string.match()
-// var str= 'asdjlj32k()*SA09123!!@#$%^&*(()_+'
-//  console.log(isExistSpecialCharInString('asdlk234l'));
 
 const listAbbreviationName = [
     {
