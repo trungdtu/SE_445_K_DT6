@@ -1,3 +1,32 @@
+function checkNumberInString(value){
+    var format = /^[0-9]+$/;
+    for( i=0; i<value.length;i++){
+        if(!value.match(format)) return false;
+    }
+    return true;
+}
+function checkStringInString(value){
+    var format = /^[a-zA-Z]+$/;
+    for( i=0; i<value.length;i++){
+        if(!value.match(format)) return false;
+    }
+    return true;
+}
+function checkSpecialChar(value){
+    var format = /^[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]*$/;
+    if( value.match(format) ){
+        return true;
+    }else{
+        return false;
+    }
+}
+function isExistSpecialCharInString(value){
+    for( i=0; i<value.length;i++){
+        if(checkSpecialChar(value[i])) return true;
+    }
+    return false;
+}
+
 const listAbbreviationName = [
     {
         key: "lap",
@@ -8,6 +37,7 @@ const listAbbreviationName = [
         value: "Máy tính bàn"
     }
 ];
+
 async function abbreviationName(name){
     for await(var item of listAbbreviationName){
         if(item.key==name.toLowerCase()){
@@ -16,51 +46,85 @@ async function abbreviationName(name){
     }
     return name;
 }
+function minMaxOfName(value){
+    if(value.length<2 || value.length>50) return false;
+    else return true;
+}
 function nameProductRule(value){
     return new Promise(async(resolve, reject)=>{
-        if(typeof value === 'string') {
-            resolve(await abbreviationName(value));
+        if(!checkStringInString(value) || isExistSpecialCharInString(value)){
+            reject('TenHang cant exist number or special char');
         }
+        else if(value == ''){
+            reject('TenHang cant be blank');
+        }
+        else if(!minMaxOfName(value)) reject('TenHang must be between 2 and 50 characters');
         else {
-            reject('Wrong format for TenHang, TenHang must be a String');
+            resolve(await abbreviationName(value));
         }
     })
 }
 function priceProductRule(value){
     return new Promise((resolve,reject)=>{
-        if(Number.isInteger(value)) {
-            return resolve(value);
+        if(!checkNumberInString(value)) {
+            reject('GiaTri cant exist char or special char');
         }
-        else reject('Wrong format for GiaTri, GiaTri must be an Integer');
+        else if(value == '')
+            reject('GiaTri cant be blank');
+        else if(value<1000) 
+            reject('GiaTri must greater than 1000');
+        else resolve(parseInt(value)); 
     })
 }
+
 function noteProductRule(value){
     return new Promise((resolve, reject)=>{
         if(typeof value === 'string') {
-            return resolve(true);
+            resolve(value);
         }
-        else return reject({
+        else reject({
             table: 'SanPham',
             col: 'Note',
             message: 'Wrong format for Note, Note must be a String'
         })
     })
 }
-class RuleSanPham{
-    async checkRule(data){
-        try{
-            return {
-                ...data,
-                TenHang: await nameProductRule(data.TenHang),
-                GiaTri: await priceProductRule(data.GiaTri)
-            }
-        }
-        catch (err){
-            return null;
+async function checkRule(data){
+    try{
+        return {
+            ...data,
+            TenHang: await nameProductRule(data.TenHang),
+            GiaTri: await priceProductRule(data.GiaTri)
         }
     }
-    
+    catch (err){
+        console.log(err);
+        return null;
+    }
 }
-module.exports = new RuleSanPham();
-
+async function run() {
+    const data = {
+        TenHang: 'Tuấn cùi',
+        GiaTri: '1000',
+        Note: ''
+    }
+    console.log(await checkRule(data));
+}
+run();
+// class RuleSanPham{
+//     async checkRule(data){
+//         try{
+//             return {
+//                 ...data,
+//                 TenHang: await nameProductRule(data.TenHang),
+//                 GiaTri: await priceProductRule(data.GiaTri)
+//             }
+//         }
+//         catch (err){
+//             console.log(err);
+//             return null;
+//         }
+//     }
+// }
+// module.exports = new RuleSanPham();
 
