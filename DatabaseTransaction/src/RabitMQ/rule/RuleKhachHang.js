@@ -61,30 +61,49 @@ function ngaysinhRule(value){
         })
     })
 }
-async function testRule() {
-    try {
-        const data = await ngaysinhRule('31/11/2000')
-        console.log(data);
-    } catch (e) {
-        console.log(e)
-    }
-}
-class RuleKhachHang{
-        async checkRule(data){
-            try{
-            return {
-                ...data,
-                HoVaTen: await hoRule(data.HoVaTen),
-                NgaySinh: await ngaysinhRule(data.NgaySinh),
-                DiaChi: await diachiRule(data.DiaChi),
-                SoDienThoai: await sdtRule(data.SoDienThoai),
-                CMND: await cmndRule(data.CMND)
-            }
-        }
-        catch (err){
-            console.log(err);
-            return null;
+async function testRule(data){
+    try{
+        return {
+            ...data,
+            HoVaTen: await hoRule(data.HoVaTen),
+            NgaySinh: await ngaysinhRule(data.NgaySinh),
+            DiaChi: await diachiRule(data.DiaChi),
+            SoDienThoai: await sdtRule(data.SoDienThoai),
+            CMND: await cmndRule(data.CMND)
         }
     }
+    catch (err){
+        console.log(err);
+        return null;
+    }
 }
+async function run() {
+    const data = {
+        HoVaTen: 'Phan Trung',
+        NgaySinh: '31/11/2023',
+        DiaChi: '123 Phan Chu Trinh, Hải Châu 1, Hải Châu, Đà Nẵng',
+        SoDienThoai: '0123456789',
+        CMND: '123456789'
+    }
+    console.log(await testRule(data));
+}
+run()
+// class RuleKhachHang{
+//         async checkRule(data){
+//             try{
+//             return {
+//                 ...data,
+//                 HoVaTen: await hoRule(data.HoVaTen),
+//                 NgaySinh: await ngaysinhRule(data.NgaySinh),
+//                 DiaChi: await diachiRule(data.DiaChi),
+//                 SoDienThoai: await sdtRule(data.SoDienThoai),
+//                 CMND: await cmndRule(data.CMND)
+//             }
+//         }
+//         catch (err){
+//             console.log(err);
+//             return null;
+//         }
+//     }
+// }
 module.exports = new RuleKhachHang();

@@ -12,6 +12,7 @@ function checkStringInString(value){
     }
     return true;
 }
+console.log('checkStringInString: ', checkStringInString('Tuấn cùi'));
 function checkSpecialChar(value){
     var format = /^[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]*$/;
     if( value.match(format) ){
@@ -52,13 +53,11 @@ function minMaxOfName(value){
 }
 function nameProductRule(value){
     return new Promise(async(resolve, reject)=>{
-        if(!checkStringInString(value) || isExistSpecialCharInString(value)){
-            reject('TenHang cant exist number or special char');
-        }
-        else if(value == ''){
+        if(value == ''){
             reject('TenHang cant be blank');
-        }
-        else if(!minMaxOfName(value)) reject('TenHang must be between 2 and 50 characters');
+        } else if(!checkStringInString(value) || isExistSpecialCharInString(value)){
+            reject('TenHang cant exist number or special char');
+        } else if(!minMaxOfName(value)) reject('TenHang must be between 2 and 50 characters');
         else {
             resolve(await abbreviationName(value));
         }
