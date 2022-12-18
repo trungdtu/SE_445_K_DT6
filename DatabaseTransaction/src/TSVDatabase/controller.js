@@ -1,4 +1,3 @@
-const formatData = require('./readfile');
 const fs = require('fs');
 const tsvJSON = (tsv) => {
   const lines = tsv.split("\n");
@@ -24,7 +23,7 @@ const tsvJSON = (tsv) => {
 class TSVController {
   getTSV = () => {
     try {
-      const data = fs.readFileSync('D:/TichHopHeThong/DeTaiNhom/DatabaseTransaction/src/Data/db.tsv', 'utf8');
+      const data = fs.readFileSync('D:/TichHopHeThong/DeTaiNhom/DatabaseTransaction/src/TSVDatabase/db.tsv', 'utf8');
       return tsvJSON(data);
     } catch (err) {
       console.error(err);

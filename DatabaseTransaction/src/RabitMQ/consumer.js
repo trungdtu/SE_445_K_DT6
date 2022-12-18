@@ -1,12 +1,16 @@
 const amqplib = require('amqplib');
 class Receive {
-  async run (name, channel,db) {
-    const rabitMQ = await amqplib.connect('amqp://localhost:5672');
-    await channel.consume(name, async smg => {
-      console.log(name + ': ', smg.content.toString())
+  run (name, channel,db) {
+    channel.prefetch(1);
+    channel.consume(name, function(msg) {
+      console.log('2: ', msg.content.toString());
+      setTimeout(function() {
+        console.log(" [x] Done");
+        channel.ack(msg);
+      }, 10 * 1000);
     }, {
-      noAck: true,
-    })
+      noAck: false
+    });
   }
 }
 module.exports = new Receive();
