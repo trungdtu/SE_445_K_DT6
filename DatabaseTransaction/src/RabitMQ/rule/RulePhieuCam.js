@@ -78,7 +78,7 @@ function dateRuleReturn(valueTao, valueTra) {
   });
 }
 const data = {
-  NgayTao: '15/12/2022',
+  NgayTao: '15d/12/2022',
   NgayTra: '30/12/2022',
   LaiSuat: '2.424413',
 };
