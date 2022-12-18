@@ -6,7 +6,7 @@ function checkNumberInString(value){
     return true;
 }
 function checkStringInString(value){
-    var format = /^[a-zA-Z]+$/;
+    var format = /[^a-z0-9A-Z_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễếệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ]/u;
     for( i=0; i<value.length;i++){
         if(!value.match(format)) return false;
     }
@@ -52,11 +52,11 @@ function minMaxOfName(value){
 }
 function nameProductRule(value){
     return new Promise(async(resolve, reject)=>{
-        if(!checkStringInString(value) || isExistSpecialCharInString(value)){
-            reject('TenHang cant exist number or special char');
-        }
-        else if(value == ''){
+        if(value == ''){
             reject('TenHang cant be blank');
+        }
+        else if(!checkStringInString(value) || isExistSpecialCharInString(value)){
+            reject('TenHang cant exist number or special char');
         }
         else if(!minMaxOfName(value)) reject('TenHang must be between 2 and 50 characters');
         else {
