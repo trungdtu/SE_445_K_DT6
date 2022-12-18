@@ -8,15 +8,14 @@ function formatRate(string) {
   return false;
 }
 function deleteSpace(string) {
-  return string.split(' ').join('');
+  string = string.split(' ').join('');
+  return string;
 }
 function getRateRule(value) {
   return new Promise((resolve, reject) => {
-    // let value = deleteSpace(value);
     if (value.includes(',')) {
       value = value.replace(',', '.');
     }
-    console.log(value);
     if (!formatRate(value)) {
       reject('Wrong format for Lai Suat, contains invalid characters');
     } else {
@@ -30,7 +29,6 @@ function dateRule(valueTao) {
   return new Promise((resolve, reject) => {
     valueTao = deleteSpace(valueTao);
     let check = moment(valueTao, 'DD/MM/YYYY');
-    console.log(check.parsingFlags());
     if (
       check.parsingFlags().unusedInput.length == 0 &&
       check.parsingFlags().empty == true
@@ -67,9 +65,7 @@ function dateRuleReturn(valueTao, valueTra) {
       reject('Wrong format for Ngay Tra, months is invalid');
     } else if (check.parsingFlags().overflow == 2) {
       reject('Wrong format for Ngay Tra, days is invalid');
-    } else if (
-      moment(valueTra, 'DD/MM/YYYY').isAfter(moment(valueTao, 'DD/MM/YYYY'))
-    ) {
+    } else if (moment(valueTra, 'DD/MM/YYYY').isAfter(dateTao)) {
       return resolve(valueTra);
     } else
       reject(
@@ -77,28 +73,30 @@ function dateRuleReturn(valueTao, valueTra) {
       );
   });
 }
-const data = {
-  NgayTao: '15d/12/2022',
-  NgayTra: '30/12/2022',
-  LaiSuat: '2.424413',
-};
-getRateRule(data.LaiSuat).then((value) => {
-  console.log(value);
-});
-
-class RulePhieuCam {
-  async checkRule(data) {
-    try {
-      return {
-        ...data,
-        NgayTao: await dateRule(data.NgayTao),
-        NgayTra: await dateRuleReturn(data.NgayTra),
-        LaiSuat: await getRateRule(data.LaiSuat),
-      };
-    } catch (err) {
-      console.log(err);
-      return null;
-    }
+async function checkRule(data) {
+  try {
+    return {
+      ...data,
+      NgayTao: await dateRule(data.NgayTao),
+      NgayTra: await dateRuleReturn(data.NgayTao, data.NgayTra),
+      LaiSuat: await getRateRule(data.LaiSuat),
+    };
+  } catch (err) {
+    console.log(err);
+    return null;
   }
 }
-module.exports = new RulePhieuCam();
+async function run() {
+  const data = {
+    MaPhieu: '1',
+    MaKhachHang: '1',
+    NgayTao: '15/12/2022',
+    NgayTra: '30/12/2022',
+    LaiSuat: '2.424413',
+  };
+  console.log(await checkRule(data));
+}
+run();
+// class RulePhieuCam {
+// }
+// module.exports = new RulePhieuCam();
