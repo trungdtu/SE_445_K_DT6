@@ -1,5 +1,3 @@
-
-
 const listAbbreviationName = [
     {
         key: "lap",
@@ -10,7 +8,6 @@ const listAbbreviationName = [
         value: "Máy tính bàn"
     }
 ];
-
 async function abbreviationName(name){
     for await(var item of listAbbreviationName){
         if(item.key==name.toLowerCase()){
@@ -19,7 +16,6 @@ async function abbreviationName(name){
     }
     return name;
 }
-
 function nameProductRule(value){
     return new Promise(async(resolve, reject)=>{
         if(typeof value === 'string') {
@@ -30,7 +26,6 @@ function nameProductRule(value){
         }
     })
 }
-
 function priceProductRule(value){
     return new Promise((resolve,reject)=>{
         if(Number.isInteger(value)) {
@@ -39,7 +34,6 @@ function priceProductRule(value){
         else reject('Wrong format for GiaTri, GiaTri must be an Integer');
     })
 }
-
 function noteProductRule(value){
     return new Promise((resolve, reject)=>{
         if(typeof value === 'string') {
@@ -52,7 +46,6 @@ function noteProductRule(value){
         })
     })
 }
-
 class RuleSanPham{
     async checkRule(data){
         try{
@@ -63,7 +56,6 @@ class RuleSanPham{
             }
         }
         catch (err){
-            console.log(err);
             return null;
         }
     }
