@@ -6,7 +6,7 @@ function checkNumberInString(value){
     return true;
 }
 function checkStringInString(value){
-    var format = /^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]+$/u;
+    var format = /^[a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]+$/u;
     for( i=0; i<value.length;i++){
         if(!value.match(format)) return false;
     }
@@ -59,7 +59,7 @@ async function nameProductRule(value){
                 message: 'TenHang cant be blank'
             });
         }
-        else if(isExistSpecialCharInString(value)){
+        else if(!checkStringInString ||isExistSpecialCharInString(value)){
             reject(
                 {
                     table: 'SanPham',
