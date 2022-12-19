@@ -103,18 +103,18 @@ async function priceProductRule(value){
     })
 }
 
-function noteProductRule(value){
-    return new Promise((resolve, reject)=>{
-        if(typeof value === 'string') {
-            resolve(value);
-        }
-        else reject({
-            table: 'SanPham',
-            col: 'Note',
-            message: 'Wrong format for Note, Note must be a String'
-        })
-    })
-}
+// function noteProductRule(value){
+//     return new Promise((resolve, reject)=>{
+//         if(typeof value === 'string') {
+//             resolve(value);
+//         }
+//         else reject({
+//             table: 'SanPham',
+//             col: 'Note',
+//             message: 'Wrong format for Note, Note must be a String'
+//         })
+//     })
+// }
 async function checkRule(data){
     try{
         return {
@@ -141,6 +141,7 @@ class RuleSanPham{
     async checkRule(data){
         try{
             const returnData = {
+                ...data,
                 TenHang: await nameProductRule(data.TenHang),
                 GiaTri: await priceProductRule(data.GiaTri)
             }
