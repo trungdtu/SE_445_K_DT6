@@ -140,14 +140,14 @@ run();
 class RuleSanPham{
     async checkRule(data){
         try{
-            return {
-                ...data,
+            const returnData = {
                 TenHang: await nameProductRule(data.TenHang),
                 GiaTri: await priceProductRule(data.GiaTri)
             }
+            return returnData;
         }
         catch (err){
-            console.log(err);
+//            console.log(err);
             return null;
         }
     }
