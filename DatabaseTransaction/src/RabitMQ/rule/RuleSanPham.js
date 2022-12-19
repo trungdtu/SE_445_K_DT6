@@ -50,7 +50,7 @@ function minMaxOfName(value){
     if(value.length<2 || value.length>50) return false;
     else return true;
 }
-function nameProductRule(value){
+async function nameProductRule(value){
     return new Promise(async(resolve, reject)=>{
         if(value == ''){
             reject({
@@ -59,12 +59,12 @@ function nameProductRule(value){
                 message: 'TenHang cant be blank'
             });
         }
-        else if(!checkStringInString(value) || isExistSpecialCharInString(value)){
+        else if(isExistSpecialCharInString(value)){
             reject(
                 {
                     table: 'SanPham',
                     col: 'TenHang',
-                    message: 'TenHang cant exist number or special char'
+                    message: 'TenHang cant exist special char'
                 });
         }
         else if(!minMaxOfName(value)) 
@@ -78,7 +78,7 @@ function nameProductRule(value){
         }
     })
 }
-function priceProductRule(value){
+async function priceProductRule(value){
     return new Promise((resolve,reject)=>{
         if(!checkNumberInString(value)) {
             reject({ 
@@ -130,7 +130,7 @@ async function checkRule(data){
 }
 async function run() {
     const data = {
-        TenHang: 'Tuấn cùi',
+        TenHang: 'Iphone 6',
         GiaTri: '1000',
         Note: ''
     }
