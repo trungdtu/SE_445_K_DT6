@@ -53,12 +53,26 @@ function minMaxOfName(value){
 function nameProductRule(value){
     return new Promise(async(resolve, reject)=>{
         if(value == ''){
-            reject('TenHang cant be blank');
+            reject({
+                table: 'SanPham',
+                col: 'TenHang',
+                message: 'TenHang cant be blank'
+            });
         }
         else if(!checkStringInString(value) || isExistSpecialCharInString(value)){
-            reject('TenHang cant exist number or special char');
+            reject(
+                {
+                    table: 'SanPham',
+                    col: 'TenHang',
+                    message: 'TenHang cant exist number or special char'
+                });
         }
-        else if(!minMaxOfName(value)) reject('TenHang must be between 2 and 50 characters');
+        else if(!minMaxOfName(value)) 
+            reject({
+                table: 'SanPham',
+                col: 'TenHang',
+                message: 'TenHang must be between 2 and 50 characters'
+            });
         else {
             resolve(await abbreviationName(value));
         }
@@ -67,12 +81,24 @@ function nameProductRule(value){
 function priceProductRule(value){
     return new Promise((resolve,reject)=>{
         if(!checkNumberInString(value)) {
-            reject('GiaTri cant exist char or special char');
+            reject({ 
+                table: 'SanPham',
+                col: 'GiaTri',
+                message: 'GiaTri cant exist char or special char'
+            })
         }
         else if(value == '')
-            reject('GiaTri cant be blank');
+            reject({ 
+                table: 'SanPham',
+                col: 'GiaTri',
+                message: 'GiaTri cant be blank'
+                });
         else if(value<1000) 
-            reject('GiaTri must greater than 1000');
+            reject({
+                table: 'SanPham',
+                col: 'GiaTri',
+                message: 'GiaTri must greater than 1000'
+            });
         else resolve(parseInt(value)); 
     })
 }
@@ -111,20 +137,20 @@ async function run() {
     console.log(await checkRule(data));
 }
 run();
-// class RuleSanPham{
-//     async checkRule(data){
-//         try{
-//             return {
-//                 ...data,
-//                 TenHang: await nameProductRule(data.TenHang),
-//                 GiaTri: await priceProductRule(data.GiaTri)
-//             }
-//         }
-//         catch (err){
-//             console.log(err);
-//             return null;
-//         }
-//     }
-// }
-// module.exports = new RuleSanPham();
+class RuleSanPham{
+    async checkRule(data){
+        try{
+            return {
+                ...data,
+                TenHang: await nameProductRule(data.TenHang),
+                GiaTri: await priceProductRule(data.GiaTri)
+            }
+        }
+        catch (err){
+            console.log(err);
+            return null;
+        }
+    }
+}
+module.exports = new RuleSanPham();
 
