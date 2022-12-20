@@ -7,15 +7,23 @@ function formatRate(string) {
   }
   return false;
 }
+function deleteSpace(string) {
+  string = string.split(' ').join('');
+  return string;
+}
 function getRateRule(value) {
   return new Promise((resolve, reject) => {
-    if (value.includes(',')) {
+    if (value.toString().includes(',')) {
       value = value.replace(',', '.');
     }
     if (!formatRate(value)) {
-      reject('Wrong format for Lai Suat, contains invalid characters');
+      reject({
+        table: 'PhieuCam',
+        col: 'LaiSuat',
+        message: 'Wrong format, Lai Suat must be float',
+      });
     } else {
-      value = parseFloat(value).toFixed(2);
+      value = parseFloat(value * 1).toFixed(2);
       if (value >= 10 && value <= 100) resolve(value / 100);
       resolve(value);
     }
@@ -23,87 +31,100 @@ function getRateRule(value) {
 }
 function dateRule(valueTao) {
   return new Promise((resolve, reject) => {
+    valueTao = deleteSpace(valueTao);
     let check = moment(valueTao, 'DD/MM/YYYY');
     if (
       check.parsingFlags().unusedInput.length == 0 &&
       check.parsingFlags().empty == true
     ) {
-      reject('Wrong format for Ngay Tao,Ngay Tao cant be blank');
+      reject({
+        table: 'PhieuCam',
+        col: 'NgayCam',
+        message: 'Wrong format must be DD/MM/YYYY',
+      });
     } else if (check.parsingFlags().unusedInput.length > 0) {
-      reject('Wrong format for Ngay Tao, contains invalid characters');
+      reject({
+        table: 'PhieuCam',
+        col: 'NgayCam',
+        message: 'Wrong format must be DD/MM/YYYY',
+      });
     } else if (check.parsingFlags().overflow == 0) {
-      reject('Wrong format for Ngay Tao, years is invalid');
+      reject({
+        table: 'PhieuCam',
+        col: 'NgayCam',
+        message: 'Wrong format for Ngay Tao, years is invalid',
+      });
     } else if (check.parsingFlags().overflow == 1) {
-      reject('Wrong format for Ngay Tao, months is invalid');
+      reject({
+        table: 'PhieuCam',
+        col: 'NgayCam',
+        message: 'Wrong format for Ngay Tao, month is invalid',
+      });
     } else if (check.parsingFlags().overflow == 2) {
-      reject('Wrong format for Ngay Tao, days is invalid');
+      reject({
+        table: 'PhieuCam',
+        col: 'NgayCam',
+        message: 'Wrong format for Ngay Tao, date is invalid',
+      });
     } else {
-      return resolve(valueTao);
+      resolve(valueTao);
     }
   });
 }
 function dateRuleReturn(valueTao, valueTra) {
   return new Promise((resolve, reject) => {
+    if (valueTra == undefined) resolve(null);
+    if (valueTra.trim() == '') resolve(null);
+    valueTra = deleteSpace(valueTra);
     let check = moment(valueTra, 'DD/MM/YYYY');
     let dateTao = moment(valueTao, 'DD/MM/YYYY');
-    if (
-      check.parsingFlags().unusedInput.length == 0 &&
-      check.parsingFlags().empty == true
-    ) {
-      reject('Wrong format for Ngay Tra,Ngay Tra cant be blank');
-    } else if (check.parsingFlags().unusedInput.length > 0) {
-      reject('Wrong format for Ngay Tra, contains invalid characters');
+    if (check.parsingFlags().unusedInput.length > 0) {
+      reject({
+        table: 'PhieuCam',
+        col: 'NgayTra',
+        message: 'Wrong format must be DD/MM/YYYY',
+      });
     } else if (check.parsingFlags().overflow == 0) {
-      reject('Wrong format for Ngay Tra, years is invalid');
+      reject({
+        table: 'PhieuCam',
+        col: 'NgayTra',
+        message: 'Wrong format for Ngay Tra, years is invalid',
+      });
     } else if (check.parsingFlags().overflow == 1) {
-      reject('Wrong format for Ngay Tra, months is invalid');
+      reject({
+        table: 'PhieuCam',
+        col: 'NgayTra',
+        message: 'Wrong format for Ngay Tra, month is invalid',
+      });
     } else if (check.parsingFlags().overflow == 2) {
-      reject('Wrong format for Ngay Tra, days is invalid');
-    } else if (
-      moment(valueTra, 'DD/MM/YYYY').isAfter(moment(valueTao, 'DD/MM/YYYY'))
-    ) {
-      return resolve(valueTra);
+      reject({
+        table: 'PhieuCam',
+        col: 'NgayTra',
+        message: 'Wrong format for Ngay Tra, date is invalid',
+      });
+    } else if (moment(valueTra, 'DD/MM/YYYY').isAfter(dateTao)) {
+      resolve(valueTra);
     } else
-      reject(
-        'Wrong format for Ngay Tra, date Ngay Tra must be after date Ngay Tao'
-      );
+      reject({
+        table: 'PhieuCam',
+        col: 'NgayTra',
+        message: 'Date Ngay Tra must be after date Ngay Tao',
+      });
   });
 }
-async function checkRule(data) {
-  try {
-    return {
-      ...data,
-      NgayTao: await dateRule(data.NgayTao),
-      NgayTra: await dateRuleReturn(data.NgayTra),
-      LaiSuat: await getRateRule(data.LaiSuat),
-    };
-  } catch (err) {
-    console.log(err)
-    return null;
+class RulePhieuCam {
+  async checkRule(data) {
+    try {
+      const returnData = {
+        NgayCam: await dateRule(data.NgayCam),
+        NgayTra: await dateRuleReturn(data.NgayCam, data.NgayTra),
+        LaiSuat: 0.2,
+      };
+      return returnData;
+    } catch (err) {
+      console.log(err)
+      return null;
+    }
   }
 }
-const data = {
-  NgayTao: '15/12/2022',
-  NgayTra: '30/12/2022',
-  LaiSuat: '2.424413',
-};
-async function run() {
-  console.log(await checkRule(data));
-}
-run();
-// class RulePhieuCam {
-//   async checkRule(data) {
-//     try {
-//       return {
-//         ...data,
-//         NgayTao: await dateRule(data.NgayTao),
-//         NgayTra: await dateRuleReturn(data.NgayTra),
-//         LaiSuat: await getRateRule(data.LaiSuat),
-//       };
-//     } catch (err) {
-//       console.log(err);
-//       return null;
-//     }
-//   }
-// }
-// module.exports = new RulePhieuCam();
+module.exports = new RulePhieuCam();

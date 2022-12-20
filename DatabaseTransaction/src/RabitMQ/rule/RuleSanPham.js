@@ -6,13 +6,12 @@ function checkNumberInString(value){
     return true;
 }
 function checkStringInString(value){
-    var format = /^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]+$/u;
+    var format = /^[a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]+$/u;
     for( i=0; i<value.length;i++){
         if(!value.match(format)) return false;
     }
     return true;
 }
-console.log('checkStringInString: ', checkStringInString('Tuấn cùi'));
 function checkSpecialChar(value){
     var format = /^[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]*$/;
     if( value.match(format) ){
@@ -22,7 +21,7 @@ function checkSpecialChar(value){
     }
 }
 function isExistSpecialCharInString(value){
-    for( i=0; i<value.length;i++){
+    for(var i=0; i<value.length;i++){
         if(checkSpecialChar(value[i])) return true;
     }
     return false;
@@ -38,7 +37,6 @@ const listAbbreviationName = [
         value: "Máy tính bàn"
     }
 ];
-
 async function abbreviationName(name){
     for await(var item of listAbbreviationName){
         if(item.key==name.toLowerCase()){
@@ -51,87 +49,74 @@ function minMaxOfName(value){
     if(value.length<2 || value.length>50) return false;
     else return true;
 }
-function nameProductRule(value){
+async function nameProductRule(value){
     return new Promise(async(resolve, reject)=>{
-        if(value == ''){
-            reject('TenHang cant be blank');
-<<<<<<< HEAD:DatabaseTransaction/src/RabitMQ/rule/ruleSanPham.js
-        } else if(!checkStringInString(value) || isExistSpecialCharInString(value)){
-            reject('TenHang cant exist number or special char');
-        } else if(!minMaxOfName(value)) reject('TenHang must be between 2 and 50 characters');
-=======
+        if(value == '' || !value){
+            reject({
+                table: 'SanPham',
+                col: 'TenHang',
+                message: 'TenHang cant be blank'
+            });
         }
-        else if(!checkStringInString(value) || isExistSpecialCharInString(value)){
-            reject('TenHang cant exist number or special char');
+        else if(!checkStringInString ||isExistSpecialCharInString(value)){
+            reject(
+                {
+                    table: 'SanPham',
+                    col: 'TenHang',
+                    message: 'TenHang cant exist special char'
+                });
         }
-        else if(!minMaxOfName(value)) reject('TenHang must be between 2 and 50 characters');
->>>>>>> f5115894db7d96d3d27afa055a770a32d206cd96:DatabaseTransaction/src/RabitMQ/rule/RuleSanPham.js
+        else if(!minMaxOfName(value)) 
+            reject({
+                table: 'SanPham',
+                col: 'TenHang',
+                message: 'TenHang must be between 2 and 50 characters'
+            });
         else {
             resolve(await abbreviationName(value));
         }
     })
 }
-function priceProductRule(value){
+async function priceProductRule(value){
     return new Promise((resolve,reject)=>{
-        if(!checkNumberInString(value)) {
-            reject('GiaTri cant exist char or special char');
+        if(!checkNumberInString(value) || !value) {
+            reject({ 
+                table: 'SanPham',
+                col: 'GiaTri',
+                message: 'GiaTri cant exist char or special char'
+            })
         }
         else if(value == '')
-            reject('GiaTri cant be blank');
+            reject({ 
+                table: 'SanPham',
+                col: 'GiaTri',
+                message: 'GiaTri cant be blank'
+                });
         else if(value<1000) 
-            reject('GiaTri must greater than 1000');
+            reject({
+                table: 'SanPham',
+                col: 'GiaTri',
+                message: 'GiaTri must greater than 1000'
+            });
         else resolve(parseInt(value)); 
     })
 }
 
-function noteProductRule(value){
-    return new Promise((resolve, reject)=>{
-        if(typeof value === 'string') {
-            resolve(value);
+class RuleSanPham{
+    async checkRule(data){
+        try{
+            const returnData = {
+                ...data,
+                SanPham: await nameProductRule(data.SanPham),
+                GiaTri: await priceProductRule(data.GiaTri)
+            }
+            return returnData;
         }
-        else reject({
-            table: 'SanPham',
-            col: 'Note',
-            message: 'Wrong format for Note, Note must be a String'
-        })
-    })
-}
-async function checkRule(data){
-    try{
-        return {
-            ...data,
-            TenHang: await nameProductRule(data.TenHang),
-            GiaTri: await priceProductRule(data.GiaTri)
+        catch (err){
+            console.log(err)
+            return null;
         }
     }
-    catch (err){
-        console.log(err);
-        return null;
-    }
 }
-async function run() {
-    const data = {
-        TenHang: 'Tuấn cùi',
-        GiaTri: '1000',
-        Note: ''
-    }
-    console.log(await checkRule(data));
-}
-run();
-// class RuleSanPham{
-//     async checkRule(data){
-//         try{
-//             return {
-//                 ...data,
-//                 TenHang: await nameProductRule(data.TenHang),
-//                 GiaTri: await priceProductRule(data.GiaTri)
-//             }
-//         }
-//         catch (err){
-//             console.log(err);
-//             return null;
-//         }
-//     }
-// }
-// module.exports = new RuleSanPham();
+module.exports = new RuleSanPham();
 
