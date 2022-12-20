@@ -35,6 +35,46 @@ const listAbbreviationName = [
     {
         key: "pc",
         value: "Máy tính bàn"
+    },
+    {
+        key: "ip 6",
+        value: "Iphone 6"
+    },
+    {
+        key: "ip 7",
+        value: "Iphone 7"
+    },
+    {
+        key: "ip 8",
+        value: "Iphone 8"
+    },
+    {
+        key: "ip 9",
+        value: "Iphone 9"
+    },
+    {
+        key: "ip 10",
+        value: "Iphone 10"
+    },
+    {
+        key: "ip 11",
+        value: "Iphone 11"
+    },
+    {
+        key: "ip 12",
+        value: "Iphone 12"
+    },
+    {
+        key: "ip 13",
+        value: "Iphone 13"
+    },
+    {
+        key: "mac",
+        value: "Macbook"
+    },
+    {
+        key: "xm",
+        value: "Xe Máy"
     }
 ];
 async function abbreviationName(name){

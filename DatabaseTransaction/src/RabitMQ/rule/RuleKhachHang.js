@@ -34,9 +34,18 @@ function nameRule(value){
             reject('Ten cant be blank');
         }
         if(!checkStringInString(value) || isExistSpecialCharInString(value) ){
-            reject('Ten cant exist number or special char' );
+            reject({
+                table: 'KhachHang',
+                col: 'DiaChi',
+                message: 'Ten cant exist number or special char'
+            });
         }
-        else if(!minMaxOfName(value)) reject('Ten must be between 2 and 50 characters');
+        else if(!minMaxOfName(value)) reject(
+            {
+                table: 'KhachHang',
+                col: 'DiaChi',
+                message: 'Ten must be between 2 and 50 characters'
+            });
         else {
             resolve(value);
         }
@@ -88,7 +97,12 @@ function cmndRule(value){
 
 function diachiRule(value){
     return new Promise((resolve,reject)=>{
-        if(!minMaxOfName(value)) reject('Diachi must be between 2 and 100 characters');
+        if(!minMaxOfName(value))  reject(
+            {
+                table: 'KhachHang',
+                col: 'DiaChi',
+                message:  'Diachi must be between 2 and 100 characters'
+            });
         else return resolve(value)
     })
 }

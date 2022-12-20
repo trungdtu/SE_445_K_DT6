@@ -62,7 +62,7 @@ class CheckRule {
       Note: data.Note,
     });
     const rulePhieuCam = await RulePhieuCam.checkRule({
-      LaiSuat: "2%",
+      LaiSuat: data.LaiSuat,
       NgayCam: data.NgayCam,
       NgayTra: data.NgayTra,
     });

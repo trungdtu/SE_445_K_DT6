@@ -13,19 +13,12 @@ function deleteSpace(string) {
 }
 function getRateRule(value) {
   return new Promise((resolve, reject) => {
-    if (value.toString().includes(',')) {
-      value = value.replace(',', '.');
-    }
-    if (!formatRate(value)) {
-      reject({
-        table: 'PhieuCam',
-        col: 'LaiSuat',
-        message: 'Wrong format, Lai Suat must be float',
-      });
-    } else {
-      value = parseFloat(value * 1).toFixed(2);
-      if (value >= 10 && value <= 100) resolve(value / 100);
-      resolve(value);
+    let num = parseFloat(value);
+    num = num / 100;
+    if (num !== NaN) {
+      resolve(num)
+    } else{ 
+      resolve(0.02)
     }
   });
 }
@@ -118,7 +111,7 @@ class RulePhieuCam {
       const returnData = {
         NgayCam: await dateRule(data.NgayCam),
         NgayTra: await dateRuleReturn(data.NgayCam, data.NgayTra),
-        LaiSuat: 0.2,
+        LaiSuat: await getRateRule(data.LaiSuat),
       };
       return returnData;
     } catch (err) {
